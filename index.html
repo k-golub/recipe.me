@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecipMe - Кулинарный ассистент для студентов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --caramel: #D9B382;
+            --arylide-yellow: #E9D758;
+            --uc-gold: #B88B4A;
+            --army-green: #454B1B;
+            --henyaudi-yellow: #F4D35E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--henyaudi-yellow);
+            color: var(--army-green);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            color: var(--army-green);
+            font-size: 2rem;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--army-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .search-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 2px solid var(--army-green);
+            background-color: white;
+            width: 300px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--army-green);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-section h3 i {
+            color: var(--uc-gold);
+        }
+
+        .categories {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-btn {
+            padding: 12px 15px;
+            background-color: #f8f8f8;
+            border: none;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-btn:hover {
+            background-color: var(--henyaudi-yellow);
+            transform: translateX(5px);
+        }
+
+        .category-btn.active {
+            background-color: var(--henyaudi-yellow);
+            color: var(--army-green);
+            font-weight: 600;
+        }
+
+        .start-chat-btn {
+            background-color: var(--army-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .start-chat-btn:hover {
+            background-color: #353a16;
+            transform: translateY(-3px);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chat-header {
+            background-color: var(--henyaudi-yellow);
+            color: var(--army-green);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .bot-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--army-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            background-color: var(--caramel);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 15px;
+            border-radius: 18px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: var(--arylide-yellow);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            background-color: var(--uc-gold);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background-color: white;
+            display: flex;
+            gap: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--army-green);
+        }
+
+        .send-btn {
+            background-color: var(--army-green);
+            color: white;
+            border: none;
+            width: 55px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            background-color: #353a16;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 20px 20px;
+            background-color: white;
+        }
+
+        .suggestion-btn {
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-btn:hover {
+            background-color: var(--henyaudi-yellow);
+        }
+
+        .recipe-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--henyaudi-yellow);
+        }
+
+        .recipe-title {
+            color: var(--army-green);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .recipe-ingredients, .recipe-steps {
+            margin-top: 10px;
+        }
+
+        .recipe-ingredients h4, .recipe-steps h4 {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--army-green);
+            color: white;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 992px) {
+            main {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .search-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-messages {
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .search-box {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-utensils logo-icon"></i>
+            <h1>RecipMe</h1>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Поиск рецептов...">
+        </div>
+        
+        <div class="user-menu">
+            <div class="user-avatar">Н</div>
+        </div>
+    </header>
+    
+    <main>
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-filter"></i> Категории рецептов</h3>
+                <div class="categories">
+                    <button class="category-btn active" data-category="simple">
+                        <i class="fas fa-star"></i> Простые рецепты
+                    </button>
+                    <button class="category-btn" data-category="salads">
+                        <i class="fas fa-leaf"></i> Салаты
+                    </button>
+                    <button class="category-btn" data-category="soups">
+                        <i class="fas fa-bowl-hot"></i> Супы
+                    </button>
+                    <button class="category-btn" data-category="main">
+                        <i class="fas fa-drumstick-bite"></i> Вторые блюда
+                    </button>
+                    <button class="category-btn" data-category="breakfast">
+                        <i class="fas fa-egg"></i> Завтраки
+                    </button>
+                    <button class="category-btn" data-category="lunch">
+                        <i class="fas fa-apple-alt"></i> Обеды
+                    </button>
+                    <button class="category-btn" data-category="dinner">
+                        <i class="fas fa-moon"></i> Ужины
+                    </button>
+                    <button class="category-btn" data-category="snack">
+                        <i class="fas fa-cookie-bite"></i> Перекусы
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-cogs"></i> Функции ассистента</h3>
+                <div class="categories">
+                    <button class="category-btn" data-category="ingredients">
+                        <i class="fas fa-search"></i> Поиск по ингредиентам
+                    </button>
+                    <button class="category-btn" data-category="shopping">
+                        <i class="fas fa-shopping-cart"></i> Продуктовая корзина
+                    </button>
+                    <button class="category-btn" data-category="menu">
+                        <i class="fas fa-calendar-alt"></i> Меню на неделю
+                    </button>
+                    <button class="category-btn" data-category="nutrition">
+                        <i class="fas fa-chart-line"></i> Учет КБЖУ
+                    </button>
+                    <button class="category-btn" data-category="budget">
+                        <i class="fas fa-wallet"></i> Бюджетные варианты
+                    </button>
+                </div>
+            </div>
+            
+            <button class="start-chat-btn" id="startChatBtn">
+                <i class="fas fa-comment-alt"></i> НАЧАТЬ ЧАТ!
+            </button>
+        </aside>
+        
+        <section class="chat-container">
+            <div class="chat-header">
+                <div class="bot-avatar">Н</div>
+                <div>
+                    <h2>Натали, ваш кулинарный ассистент</h2>
+                    <p>Готов помочь с рецептами, меню и планированием питания</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-sender">Натали</div>
+                    Привет! Я Натали, ваш виртуальный кулинарный ассистент. Помогу найти рецепты по категориям, подобрать блюдо из имеющихся продуктов, составить меню на неделю с учетом ваших предпочтений и бюджета. Чем могу помочь?
+                </div>
+            </div>
+            
+            <div class="suggestions" id="suggestions">
+                <button class="suggestion-btn" data-query="Простые рецепты на ужин">Простые рецепты на ужин</button>
+                <button class="suggestion-btn" data-query="Что приготовить из курицы и риса">Что приготовить из курицы и риса</button>
+                <button class="suggestion-btn" data-query="Бюджетное меню на неделю">Бюджетное меню на неделю</button>
+                <button class="suggestion-btn" data-query="Рецепты для завтрака">Рецепты для завтрака</button>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Введите ваш запрос...">
+                <button class="send-btn" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>RecipMe &copy; 2023 | Кулинарный ассистент для студентов | Все рецепты проверены и адаптированы для студентов</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы DOM
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const startChatBtn = document.getElementById('startChatBtn');
+            const suggestions = document.getElementById('suggestions');
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const searchBox = document.querySelector('.search-box');
+            
+            // База данных рецептов (упрощенная версия)
+            const recipes = {
+                'simple': [
+                    {
+                        title: 'Яичница с помидорами',
+                        ingredients: ['Яйца (2 шт)', 'Помидоры (1-2 шт)', 'Соль, перец по вкусу', 'Масло растительное (1 ст.л.)'],
+                        steps: ['Помидоры нарезать кубиками', 'Разогреть сковороду с маслом', 'Обжарить помидоры 2-3 минуты', 'Вбить яйца, посолить, поперчить', 'Жарить до готовности'],
+                        category: 'Простое',
+                        time: '10 мин',
+                        difficulty: 'Легко'
+                    },
+                    {
+                        title: 'Сэндвич с сыром и овощами',
+                        ingredients: ['Хлеб (2 ломтика)', 'Сыр (1-2 ломтика)', 'Помидор (2-3 кружка)', 'Огурец (5-6 кружков)', 'Лист салата', 'Майонез или соус'],
+                        steps: ['Поджарить хлеб в тостере или на сковороде', 'Намазать соус на хлеб', 'Выложить овощи и сыр', 'Накрыть вторым ломтиком хлеба'],
+                        category: 'Простое',
+                        time: '5 мин',
+                        difficulty: 'Легко'
+                    }
+                ],
+                'salads': [
+                    {
+                        title: 'Греческий салат',
+                        ingredients: ['Помидоры (2 шт)', 'Огурцы (1 шт)', 'Перец болгарский (1 шт)', 'Лук красный (1/2 шт)', 'Сыр фета (100г)', 'Маслины (10-12 шт)', 'Оливковое масло (2 ст.л.)', 'Орегано, соль'],
+                        steps: ['Нарезать овощи кубиками', 'Добавить маслины и сыр фета кубиками', 'Заправить оливковым маслом и специями', 'Аккуратно перемешать'],
+                        category: 'Салат',
+                        time: '15 мин',
+                        difficulty: 'Легко'
+                    }
+                ],
+                'breakfast': [
+                    {
+                        title: 'Овсянка с фруктами',
+                        ingredients: ['Овсяные хлопья (1/2 стакана)', 'Молоко или вода (1 стакан)', 'Бананы, ягоды или яблоко', 'Мёд или сахар по вкусу'],
+                        steps: ['Довести жидкость до кипения', 'Добавить овсяные хлопья', 'Варить 5-7 минут помешивая', 'Добавить нарезанные фрукты и мёд'],
+                        category: 'Завтрак',
+                        time: '10 мин',
+                        difficulty: 'Легко'
+                    }
+                ]
+            };
+            
+            // Функция добавления сообщения в чат
+            function addMessage(sender, text, isRecipe = false, recipeData = null) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const senderDiv = document.createElement('div');
+                senderDiv.className = 'message-sender';
+                senderDiv.textContent = sender === 'user' ? 'Вы' : 'Натали';
+                
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(document.createTextNode(text));
+                
+                if (isRecipe && recipeData) {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.className = 'recipe-card';
+                    
+                    const title = document.createElement('div');
+                    title.className = 'recipe-title';
+                    title.innerHTML = `<strong>${recipeData.title}</strong> (${recipeData.time}, ${recipeData.difficulty})`;
+                    
+                    const ingredients = document.createElement('div');
+                    ingredients.className = 'recipe-ingredients';
+                    const ingTitle = document.createElement('h4');
+                    ingTitle.textContent = 'Ингредиенты:';
+                    const ingList = document.createElement('ul');
+                    recipeData.ingredients.forEach(ing => {
+                        const li = document.createElement('li');
+                        li.textContent = ing;
+                        ingList.appendChild(li);
+                    });
+                    ingredients.appendChild(ingTitle);
+                    ingredients.appendChild(ingList);
+                    
+                    const steps = document.createElement('div');
+                    steps.className = 'recipe-steps';
+                    const stepsTitle = document.createElement('h4');
+                    stepsTitle.textContent = 'Приготовление:';
+                    const stepsList = document.createElement('ol');
+                    recipeData.steps.forEach(step => {
+                        const li = document.createElement('li');
+                        li.textContent = step;
+                        stepsList.appendChild(li);
+                    });
+                    steps.appendChild(stepsTitle);
+                    steps.appendChild(stepsList);
+                    
+                    recipeCard.appendChild(title);
+                    recipeCard.appendChild(ingredients);
+                    recipeCard.appendChild(steps);
+                    
+                    messageDiv.appendChild(recipeCard);
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Функция обработки запроса пользователя
+            function processUserQuery(query) {
+                addMessage('user', query);
+                
+                // Имитация задержки ответа
+                setTimeout(() => {
+                    let response = '';
+                    let isRecipe = false;
+                    let recipeData = null;
+                    
+                    // Определение типа запроса и формирование ответа
+                    if (query.toLowerCase().includes('привет') || query.toLowerCase().includes('здравств')) {
+                        response = 'Привет! Рада видеть вас снова. Чем сегодня помогу? Можете спросить рецепт, попросить помочь с меню или поискать блюдо по имеющимся продуктам.';
+                    } else if (query.toLowerCase().includes('рецепт') || query.toLowerCase().includes('приготовить') || query.toLowerCase().includes('блюдо')) {
+                        // Проверка категорий
+                        if (query.toLowerCase().includes('простой') || query.toLowerCase().includes('легк') || query.toLowerCase().includes('быстр')) {
+                            recipeData = recipes.simple[0];
+                            response = `Вот простой рецепт "${recipeData.title}":`;
+                            isRecipe = true;
+                        } else if (query.toLowerCase().includes('салат')) {
+                            recipeData = recipes.salads[0];
+                            response = `Отличный выбор! Вот рецепт "${recipeData.title}":`;
+                            isRecipe = true;
+                        } else if (query.toLowerCase().includes('завтрак') || query.toLowerCase().includes('утро') || query.toLowerCase().includes('утрен')) {
+                            recipeData = recipes.breakfast[0];
+                            response = `Идеальный завтрак для студента - "${recipeData.title}":`;
+                            isRecipe = true;
+                        } else if (query.toLowerCase().includes('куриц') && query.toLowerCase().includes('рис')) {
+                            response = 'Из курицы и риса можно приготовить множество блюд! Вот простой вариант: куриное бедро обжарить с луком и морковью, добавить промытый рис, залить водой (1:2), тушить под крышкой 20-25 минут. В конце добавить соль, перец и зелень.';
+                        } else {
+                            response = 'У меня есть много рецептов в разных категориях. Уточните, пожалуйста: вы ищете рецепт для завтрака, обеда, ужина или что-то конкретное (салат, суп, второе блюдо)?';
+                        }
+                    } else if (query.toLowerCase().includes('меню') || query.toLowerCase().includes('недел')) {
+                        response = 'Могу помочь составить меню на неделю! Для этого мне нужно знать ваши предпочтения: есть ли аллергии, вегетарианец ли вы, какой бюджет на питание и цели (похудение, поддержание, набор массы). Давайте начнем с этого!';
+                    } else if (query.toLowerCase().includes('бюджет') || query.toLowerCase().includes('дешев') || query.toLowerCase().includes('эконом')) {
+                        response = 'Бюджетные рецепты - моя специальность! Рекомендую: макароны с сыром, картофельное пюре с котлетами, гречневая каша с овощами, рис с тушенкой, овощные супы. Могу подобрать меню на неделю за 1500 рублей. Интересует?';
+                    } else if (query.toLowerCase().includes('ингредиент') || query.toLowerCase().includes('продукт')) {
+                        response = 'Укажите, какие продукты у вас есть (например: яйца, помидоры, хлеб, сыр), и я подберу рецепты, которые можно из них приготовить!';
+                    } else if (query.toLowerCase().includes('кбжу') || query.toLowerCase().includes('калорий') || query.toLowerCase().includes('диет')) {
+                        response = 'Могу рассчитать КБЖУ для вашего рациона! Для этого нужно знать ваш вес, рост, возраст, уровень активности и цели. Также могу подбирать рецепты с определенной калорийностью.';
+                    } else {
+                        response = 'Я могу помочь с поиском рецептов, составлением меню на неделю, подбором блюд по имеющимся продуктам, расчетом КБЖУ и бюджета. Что именно вас интересует?';
+                    }
+                    
+                    addMessage('bot', response, isRecipe, recipeData);
+                }, 800);
+            }
+            
+            // Обработчик отправки сообщения
+            function sendMessage() {
+                const query = chatInput.value.trim();
+                if (query) {
+                    processUserQuery(query);
+                    chatInput.value = '';
+                }
+            }
+            
+            // Обработчик кнопки отправки
+            sendBtn.addEventListener('click', sendMessage);
+            
+            // Обработчик нажатия Enter в поле ввода
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Обработчик кнопки "Начать чат"
+            startChatBtn.addEventListener('click', function() {
+                addMessage('bot', 'Отлично! Давайте начнем. Расскажите, что вас интересует: поиск рецепта, помощь с имеющимися продуктами, составление меню или что-то другое?');
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-comments"></i> ЧАТ АКТИВЕН';
+                this.style.backgroundColor = '#2a2e14';
+            });
+            
+            // Обработчики кнопок-подсказок
+            document.querySelectorAll('.suggestion-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const query = this.getAttribute('data-query');
+                    chatInput.value = query;
+                    sendMessage();
+                });
+            });
+            
+            // Обработчики кнопок категорий
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Удаляем активный класс у всех кнопок
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    let query = '';
+                    if (category === 'simple') query = 'Простые рецепты для начинающих';
+                    else if (category === 'salads') query = 'Рецепты салатов';
+                    else if (category === 'soups') query = 'Простые рецепты супов';
+                    else if (category === 'main') query = 'Вторые блюда на обед';
+                    else if (category === 'breakfast') query = 'Идеи для завтрака';
+                    else if (category === 'lunch') query = 'Рецепты на обед';
+                    else if (category === 'dinner') query = 'Что приготовить на ужин';
+                    else if (category === 'snack') query = 'Идеи для перекуса';
+                    else if (category === 'ingredients') query = 'У меня есть курица, картофель и лук, что можно приготовить?';
+                    else if (category === 'shopping') query = 'Помоги составить продуктовую корзину на неделю';
+                    else if (category === 'menu') query = 'Нужно меню на неделю для студента';
+                    else if (category === 'nutrition') query = 'Помоги рассчитать КБЖУ';
+                    else if (category === 'budget') query = 'Бюджетные рецепты для студента';
+                    
+                    if (query) {
+                        chatInput.value = query;
+                        sendMessage();
+                    }
+                });
+            });
+            
+            // Обработчик поисковой строки
+            searchBox.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        addMessage('user', `Поиск: ${query}`);
+                        setTimeout(() => {
+                            addMessage('bot', `Ищу рецепты по запросу "${query}"... Вот что нашла:`);
+                            
+                            // Имитация результата поиска
+                            const recipeData = recipes.simple[0];
+                            addMessage('bot', `Например, "${recipeData.title}" - простой и быстрый рецепт`, true, recipeData);
+                        }, 1000);
+                        this.value = '';
+                    }
+                }
+            });
+            
+            // Приветственное сообщение при загрузке
+            setTimeout(() => {
+                addMessage('bot', 'Не забывайте, я также могу помочь с составлением продуктовой корзины, меню на неделю с учетом вашего бюджета и пищевых предпочтений! Просто скажите, что вам нужно.');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
